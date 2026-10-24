@@ -17,3 +17,6 @@ screenshots/
 *.pfx
 *.zip
 coverage/
+
+.vercel
+.env*

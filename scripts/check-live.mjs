@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
-const env=Object.fromEntries((await readFile(new URL('../.env.local',import.meta.url),'utf8')).split(/\r?\n/).filter(x=>x.includes('=')).map(x=>[x.slice(0,x.indexOf('=')),x.slice(x.indexOf('=')+1)]));
+import { parseEnv } from 'node:util';
+const env={...parseEnv(await readFile(new URL('../.env.local',import.meta.url),'utf8')), ...process.env};
 const base=env.NEXT_PUBLIC_SUPABASE_URL;const headers={apikey:env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY};
 const checks=await Promise.all(['causes','skills','sdgs','initiatives','organisations','impact_posts','profiles'].map(async table=>{const r=await fetch(`${base}/rest/v1/${table}?select=*&limit=1`,{headers});assert.equal(r.status,200,`${table} responds`);return `${table}: API read passed`;}));
 const settings=await fetch(`${base}/auth/v1/settings`,{headers});assert.equal(settings.status,200);const auth=await settings.json();
