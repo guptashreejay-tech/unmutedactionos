@@ -18,5 +18,3 @@ screenshots/
 *.zip
 coverage/
 
-.vercel
-.env*

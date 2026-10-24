@@ -27,7 +27,7 @@ Deployment verification and source-publication results are recorded as the relea
 - Application release commit: `5a91fe4` (subsequent changes document verification and improve the check script).
 - Main page, prototype, prototype discovery, login and backend health returned HTTP 200 without Vercel sign-in.
 - Live Supabase API and access-denial checks passed with the deployed website as the health target.
-- Browser smoke checks confirmed the main feed loads from Supabase, the real sign-in form renders, and prototype navigation, role joining and workspace open correctly.
+- Browser smoke checks confirmed the main feed loads from Supabase, the real sign-in form renders, and the prototype journey through role joining, workspace tabs, evidence submission, partner verification and reset works. Both inspected browser consoles had no errors.
 - The inspected main-app browser console had no errors. Vercel's available five-minute runtime-error scan returned zero records; this is a point-in-time check, not continuous monitoring.
 - Source scan found no credential patterns, private keys, connection passwords, actual publishable keys or personal filesystem paths in tracked files. `.env.local`, `.vercel/`, screenshots and generated output are excluded.
 
