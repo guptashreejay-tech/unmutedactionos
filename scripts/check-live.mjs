@@ -1,0 +1,10 @@
+import { readFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const env=Object.fromEntries((await readFile(new URL('../.env.local',import.meta.url),'utf8')).split(/\r?\n/).filter(x=>x.includes('=')).map(x=>[x.slice(0,x.indexOf('=')),x.slice(x.indexOf('=')+1)]));
+const base=env.NEXT_PUBLIC_SUPABASE_URL;const headers={apikey:env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY};
+const checks=await Promise.all(['causes','skills','sdgs','initiatives','organisations','impact_posts','profiles'].map(async table=>{const r=await fetch(`${base}/rest/v1/${table}?select=*&limit=1`,{headers});assert.equal(r.status,200,`${table} responds`);return `${table}: API read passed`;}));
+const settings=await fetch(`${base}/auth/v1/settings`,{headers});assert.equal(settings.status,200);const auth=await settings.json();
+const denied=await fetch(`${base}/rest/v1/initiatives`,{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify({title:'This unauthenticated write must fail'})});assert.ok([401,403].includes(denied.status),'anonymous writes denied');
+const privateFile=await fetch(`${base}/storage/v1/object/public/initiative-evidence/unauthorised.pdf`,{headers});assert.ok(!privateFile.ok,'evidence bucket is private');
+const local=await fetch(`${process.env.TEST_URL || 'http://localhost:3000'}/api/health`);assert.equal(local.status,200);
+console.log([...checks,'Auth settings: reachable',`Email signup enabled: ${auth.disable_signup===false}`,`Google enabled: ${auth.external?.google===true}`,'Anonymous database writes: denied','Public evidence download: denied','Website health: passed'].join('\n'));

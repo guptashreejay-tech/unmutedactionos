@@ -1,0 +1,2 @@
+-- Base causes, skills and SDGs are seeded by the migration.
+-- Development initiatives are explicitly opt-in; see seed-development.sql.
